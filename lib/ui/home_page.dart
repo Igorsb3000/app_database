@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_database_app/ui/cadastro_page.dart';
+import 'package:flutter_database_app/ui/catalogo_page.dart';
 import 'package:flutter_database_app/ui/list_page.dart';
 
 class HomePage extends StatelessWidget {
@@ -60,7 +61,12 @@ class HomeBody extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextButton(
-              onPressed: null,
+              onPressed: () => Navigator.push(
+                context, 
+                MaterialPageRoute(
+                  builder: (context) => CatalogoPage(),
+                ),
+              ),
               child: Text("Catálogo dos Livros"),
               style: TextButton.styleFrom(
                   backgroundColor: Theme.of(context).colorScheme.inversePrimary,

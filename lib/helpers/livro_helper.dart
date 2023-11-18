@@ -36,6 +36,14 @@ class LivroHelper {
         });
   }
 
+  Future<void> close() async {
+    Database? dbLivro = await db;
+    if (dbLivro != null && dbLivro.isOpen) {
+      await dbLivro.close();
+      _db = null; // Definir como null para indicar que o banco foi fechado
+    }
+  }
+
   Future<Livro> saveLivro(Livro l) async {
     Database? dbLivro = await db;
     if (dbLivro != null) {
@@ -77,9 +85,11 @@ class LivroHelper {
   Future<int> updateLivro(Livro l) async {
     Database? dbLivro = await db;
     if (dbLivro != null) {
+      print('Achou o livro na TABELA item = ${l.id}');
       return await dbLivro.update(Livro.livroTable, l.toMap(),
           where: "${Livro.idColumn} = ?", whereArgs: [l.id]);
     } else {
+      print('NAO achou o livro na TABELA');
       return 0;
     }
   }

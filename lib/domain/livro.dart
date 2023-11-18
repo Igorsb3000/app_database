@@ -15,6 +15,8 @@ class Livro{
 
   Livro(this.titulo, this.autor, this.anoPublicacao, this.avaliacao);
 
+  Livro.comId(this.id, this.titulo, this.autor, this.anoPublicacao, this.avaliacao);
+
   Livro.fromMap(Map map) {
     id = map[idColumn];
     titulo = map[tituloColumn];

@@ -5,8 +5,15 @@ import 'package:flutter_database_app/widgets/custom_rating_bar.dart';
 
 import '../domain/livro.dart';
 
-class CadastroPage extends StatelessWidget {
-  const CadastroPage({super.key});
+class EdicaoPage extends StatelessWidget {
+  late int id;
+  late String titulo;
+  late String autor;
+  late int ano;
+  late double avaliacao;
+
+  EdicaoPage(this.id, this.titulo, this.autor, this.ano, this.avaliacao,
+      {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,35 +22,62 @@ class CadastroPage extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text("Meus livros"),
       ),
-      body: FormLivroBody(),
+      body: FormEdicaoLivroBody(
+          this.id, this.titulo, this.autor, this.ano, this.avaliacao),
       backgroundColor: Theme.of(context).colorScheme.background,
     );
   }
 }
 
-class FormLivroBody extends StatefulWidget {
-  FormLivroBody({super.key});
+class FormEdicaoLivroBody extends StatefulWidget {
+  late int id;
+  late String titulo;
+  late String autor;
+  late int ano;
+  late double avaliacao;
+
+  FormEdicaoLivroBody(
+      this.id, this.titulo, this.autor, this.ano, this.avaliacao,
+      {super.key});
 
   @override
-  State<FormLivroBody> createState() => _FormLivroBodyState();
+  State<FormEdicaoLivroBody> createState() => _FormEdicaoLivroBodyState(
+        this.id,
+        this.titulo,
+        this.autor,
+        this.ano,
+        this.avaliacao,
+      );
 }
 
-class _FormLivroBodyState extends State<FormLivroBody> {
+class _FormEdicaoLivroBodyState extends State<FormEdicaoLivroBody> {
   final _formKey = GlobalKey<FormState>();
   final livroHelper = LivroHelper();
 
+  late final int id;
   TextEditingController tituloController = TextEditingController();
   TextEditingController autorController = TextEditingController();
   TextEditingController anoController = TextEditingController();
-  TextEditingController valiacaoController = TextEditingController();
   double rating = 0.0;
+
+  _FormEdicaoLivroBodyState(
+    this.id,
+    String titulo,
+    String autor,
+    int ano,
+    double avaliacao,
+  ) {
+    tituloController.text = titulo;
+    autorController.text = autor;
+    anoController.text = ano.toString();
+    rating = avaliacao;
+  }
 
   @override
   void dispose() {
     tituloController.dispose();
     autorController.dispose();
     anoController.dispose();
-    valiacaoController.dispose();
     super.dispose();
   }
 
@@ -61,12 +95,12 @@ class _FormLivroBodyState extends State<FormLivroBody> {
                   children: [
                     const SizedBox(height: 50),
                     Text(
-                      "Cadastro de Livros",
+                      "Editar Livro",
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                          fontWeight: FontWeight.w400,
-                          color: Theme.of(context).colorScheme.inverseSurface,
-                      ),
+                            fontWeight: FontWeight.w400,
+                            color: Theme.of(context).colorScheme.inverseSurface,
+                          ),
                     ),
                     const SizedBox(height: 30),
                     CustomFormField(
@@ -113,20 +147,22 @@ class _FormLivroBodyState extends State<FormLivroBody> {
                     TextButton(
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          Livro l = Livro(
+                          Livro l = Livro.comId(
+                              this.id,
                               tituloController.text,
                               autorController.text,
                               int.parse(anoController.text),
                               rating);
-                          livroHelper.saveLivro(l);
-                          Navigator.pop(context);
+                          print("Livro atualizado = " + l.toString());
+                          livroHelper.updateLivro(l);
+                          Navigator.pop(context, 'listaAtualizada');
                         }
                       },
                       style: TextButton.styleFrom(
                         backgroundColor: Theme.of(context).colorScheme.primary,
                       ),
                       child: Text(
-                        "Cadastrar",
+                        "Salvar",
                         style: Theme.of(context).textTheme.labelLarge,
                       ),
                     ),
